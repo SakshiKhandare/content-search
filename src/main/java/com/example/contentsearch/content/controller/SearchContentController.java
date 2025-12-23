@@ -3,7 +3,7 @@ package com.example.contentsearch.content.controller;
 import com.example.contentsearch.content.dto.SearchContentRequest;
 import com.example.contentsearch.content.dto.SearchContentResponse;
 import com.example.contentsearch.content.entity.Content;
-import com.example.contentsearch.content.repository.ContentRepository;
+import com.example.contentsearch.content.service.SearchService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SearchContentController {
 
-    private final ContentRepository contentRepository;
+    private final SearchService searchService;
 
     @GetMapping("/search")
     public Page<SearchContentResponse> search(
@@ -33,25 +33,28 @@ public class SearchContentController {
         PageRequest pageRequest =
                 PageRequest.of(request.getPage(), request.getSize(), sort);
 
-        Page<Content> resultPage =
-                contentRepository.search(
-                        request.getKeyword(),
-                        request.getCategory(),
-                        request.getTags(),
-                        pageRequest
-                );
+        Page<Content> rankedPage =
+                searchService.searchWithRelevance(request, pageRequest);
 
-        return resultPage.map(this::toResponse);
-    }
-
-    private SearchContentResponse toResponse(Content content) {
-        return SearchContentResponse.builder()
-                .id(content.getId())
-                .title(content.getTitle())
-                .category(content.getCategory())
-                .tags(content.getTags())
-                .publishedAt(content.getPublishedAt())
-                .views(content.getViews())
-                .build();
+        return rankedPage.map(content ->
+                SearchContentResponse.builder()
+                        .id(content.getId())
+                        .title(content.getTitle())
+                        .category(content.getCategory())
+                        .tags(content.getTags())
+                        .publishedAt(content.getPublishedAt())
+                        .views(content.getViews())
+                        .relevanceScore(
+                                searchService
+                                        .searchWithRelevance(request, pageRequest)
+                                        .getContent()
+                                        .stream()
+                                        .filter(c -> c.getId().equals(content.getId()))
+                                        .findFirst()
+                                        .map(c -> 0) // placeholder, explained below
+                                        .orElse(0)
+                        )
+                        .build()
+        );
     }
 }

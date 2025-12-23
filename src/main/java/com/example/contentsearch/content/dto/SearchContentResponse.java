@@ -18,4 +18,5 @@ public class SearchContentResponse {
     private final Set<String> tags;
     private final LocalDateTime publishedAt;
     private final Long views;
+    private final int relevanceScore;
 }
