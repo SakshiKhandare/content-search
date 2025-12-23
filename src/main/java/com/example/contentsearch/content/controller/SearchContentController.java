@@ -34,8 +34,10 @@ public class SearchContentController {
                 PageRequest.of(request.getPage(), request.getSize(), sort);
 
         Page<Content> resultPage =
-                contentRepository.searchByKeyword(
+                contentRepository.search(
                         request.getKeyword(),
+                        request.getCategory(),
+                        request.getTags(),
                         pageRequest
                 );
 

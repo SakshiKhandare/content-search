@@ -2,10 +2,9 @@ package com.example.contentsearch.content.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,4 +24,15 @@ public class SearchContentRequest {
     private String sortBy = "publishedAt";
 
     private String sortDirection = "DESC";
+
+    /**
+     * Optional exact-match category filter
+     */
+    private String category;
+
+    /**
+     * Optional OR-based tag filter.
+     * Example: tags=java,spring
+     */
+    private Set<String> tags;
 }
