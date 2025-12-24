@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -59,4 +60,23 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     """)
     Optional<Content> findByIdWithTags(@Param("id") Long id);
 
+    @Query(
+            value = """
+            SELECT DISTINCT c
+            FROM Content c
+            LEFT JOIN FETCH c.tags
+            WHERE c.status = 'PUBLISHED'
+              AND c.publishedAt >= :since
+            """,
+            countQuery = """
+            SELECT COUNT(c)
+            FROM Content c
+            WHERE c.status = 'PUBLISHED'
+              AND c.publishedAt >= :since
+            """
+    )
+    Page<Content> findTrending(
+            @Param("since") LocalDateTime since,
+            Pageable pageable
+    );
 }
