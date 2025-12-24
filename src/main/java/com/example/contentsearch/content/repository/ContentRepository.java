@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
@@ -49,4 +50,13 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
             @Param("tags") Set<String> tags,
             Pageable pageable
     );
+
+    @Query("""
+    SELECT c
+    FROM Content c
+    LEFT JOIN FETCH c.tags
+    WHERE c.id = :id
+    """)
+    Optional<Content> findByIdWithTags(@Param("id") Long id);
+
 }
