@@ -93,44 +93,31 @@ Run Instructions
         │
         ├── controller
         │   └── ContentController.java
-        │       -> Exposes REST APIs for content creation, retrieval, and search
+        │       -> REST API endpoints for content creation, retrieval, and search
         │
         ├── service
         │   └── ContentService.java
-        │       -> Handles business logic for content operations
-        │       -> Coordinates search, filtering, and pagination logic
+        │       -> Business logic for content operations and search filters
         │
         ├── repository
         │   └── ContentRepository.java
-        │       -> JPA repository for database access
-        │       -> Defines query methods for search and filtering
+        │       -> JPA repository for CRUD and search queries
         │
         ├── entity
         │   └── Content.java
-        │       -> JPA entity representing stored content
-        │       -> Maps domain fields to database columns
+        │       -> JPA entity representing a content record
         │
-        ├── dto
-        │   ├── CreateContentRequest.java
-        │   │   -> Request payload for content creation
-        │   ├── ContentResponse.java
-        │   │   -> API response model for content data
-        │   └── SearchContentResponse.java
-        │       -> Response model for paginated search results
-        │
-        └── exception
-            ├── GlobalExceptionHandler.java
-            │   -> Centralized REST exception handling
-            └── ResourceNotFoundException.java
-                -> Thrown when requested content does not exist
-    
+        └── dto
+            ├── CreateContentRequest.java
+            │   -> Request model for creating a new content
+            ├── ContentResponse.java
+            │   -> Response model representing content data
+            └── SearchContentResponse.java
+                -> Paginated search response model (if implemented)
+
     src/main/resources
-    ├── application.properties
-    │   -> Application configuration (server, datasource, JPA)
-    │
-    └── db
-        └── migration
-            -> Flyway migration scripts for schema versioning
+    └── application.properties
+        -> Configuration (datasource, server, JPA settings)
 
 
 ## Why This Project Matters
